@@ -2,7 +2,8 @@
 Masterpiece Home Essentials — FastAPI Backend
 Database: PostgreSQL (via psycopg2)
 """
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -23,6 +24,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory="front"), name="static")
+
+@app.get("/")
+def root():
+    return FileResponse("front/index.html")
 
 # ── Data Models ───────────────────────────────────────────────────────────────
 class Product(BaseModel):
@@ -129,7 +136,7 @@ def startup():
         print(f"⚠ DB init failed: {e}")
 
 # ── Routes ────────────────────────────────────────────────────────────────────
-@app.get("/")
+@app.get("/api")
 def root():
     return {
         "message": "Welcome to Masterpiece Home Essentials API",

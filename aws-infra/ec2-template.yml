@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Upgraded CloudFormation template with parameters for flexible deployment.'
+
+Parameters:
+  EnvironmentSize:
+    Type: String
+    Default: t2.micro
+    AllowedValues: [t2.micro, t3.micro, t2.small]
+    Description: Select the instance size (Keep it on t2.micro for Free Tier!).
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access.
+
+Resources:
+  MyProdEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: 'ami-00403f401ee6a4b98' # Standard Ubuntu 24.04 LTS
+      InstanceType: !Ref EnvironmentSize # Dynamically reads the parameter above
+      KeyName: !Ref KeyName            # Dynamically reads the parameter above
+      # ADD THIS BLOCK BELOW TO FORCE A PUBLIC IP:
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId: !Ref YourSubnetParameterOrId # If you are using a custom VPC    
+      Tags:
+        - Key: Name
+          Value: DynamicAutomationEngine

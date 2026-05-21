@@ -1,0 +1,23 @@
+mkdir -p ~/home-essentials/monitoring/prometheus
+
+cat > ~/home-essentials/monitoring/prometheus/values.yaml << 'EOF'
+grafana:
+  enabled: true
+  adminPassword: "admin123"
+  service:
+    type: ClusterIP
+
+prometheus:
+  enabled: true
+  service:
+    type: ClusterIP
+
+alertmanager:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+EOF
